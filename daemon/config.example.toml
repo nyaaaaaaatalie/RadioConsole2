@@ -80,3 +80,8 @@ softkeyList = [
 	"RCL",
 	"SEL"
 ]
+[icecast]
+url = "http://icecast.example.com"
+
+[rtsp]
+url = "rtsp://rtsp.example.com"

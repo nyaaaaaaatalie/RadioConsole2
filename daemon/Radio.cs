@@ -32,6 +32,8 @@ namespace daemon
         ListenOnly, // Generic single channel radio, RX state is controlled by VOX threshold on receive audio
         CM108,      // Generic single channel radio, controlled by CM108 soundcard GPIO
         SB9600,     // SB9600 radio controlled via serial
+        Icecast, // New radio type for Icecast streams
+        RTSP // New radio type for RTSP streams
     }
 
     /// <summary>
@@ -140,6 +142,7 @@ namespace daemon
         public string Description { get; set; } = "";
         public string ZoneName { get; set; } = "";
         public string ChannelName { get; set; } = "";
+        public string StreamUrl { get; set; } = "";
         public RadioState State { get; set; } = RadioState.Disconnected;
         public ScanState ScanState { get; set; } = ScanState.NotScanning;
         public PriorityState PriorityState {get; set;} = PriorityState.NoPriority;
@@ -192,6 +195,39 @@ namespace daemon
         /// <param name="rxOnly"></param>
         /// <param name="zoneName"></param>
         /// <param name="channelName"></param>
+        public class IcecastRadio
+        {
+            public string StreamUrl { get; set; }
+        }
+
+        public class RTSPRadio
+        {
+            public string StreamUrl { get; set; }
+        }
+
+        /// <summary>
+        /// Overload for an RTSP radio
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="streamUrl"></param>
+        public Radio(string name, string desc, RadioType type, string streamUrl)
+        {
+            Type = type;
+            RxOnly = true;
+            // Create status and assign static names
+            Status = new RadioStatus();
+            Status.Name = name;
+            Status.Description = desc;
+            Status.StreamUrl = streamUrl;
+        }
+
+        /// <summary>
+        /// Overload for a listen-only radio
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="rxOnly"></param>
+        /// <param name="zoneName"></param>
+        /// <param name="channelName"></param>
         public Radio(string name, string desc, RadioType type, string zoneName, string channelName)
         {
             Type = type;
@@ -230,7 +266,6 @@ namespace daemon
             Status.Description = desc;
             Status.Softkeys = softkeys;
         }
-
         /// <summary>
         /// Start the radio
         /// </summary>
@@ -246,14 +281,30 @@ namespace daemon
                 IntSB9600.radioStatus = Status;
                 IntSB9600.Start(noreset);
             }
+            else if (Type == RadioType.Icecast)
+            {
+                WebRTC.HandleIcecastStream(Status.StreamUrl);
+            }
         }
-
+        
         public void Stop()
         {
             // Stop runtimes depending on control type
             if (Type == RadioType.SB9600)
             {
                 IntSB9600.Stop();
+            }
+            else if (Type == RadioType.Icecast)
+            {
+                WebRTC.HandleIcecastStream(Status.StreamUrl, "icecast");
+            }
+            else if (Type == RadioType.RTSP)
+            {
+                WebRTC.HandleIcecastStream(Status.StreamUrl, "rtsp");
+            }
+            else if (Type == RadioType.RTSP)
+            {
+                //TODO: Stop RTSP stream
             }
         }
 

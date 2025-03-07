@@ -1113,14 +1113,26 @@ async function readConfig() {
             radios[idx].color = "blue";
         }
         // Default pan
-        if (!Object.hasOwn(radios[idx], 'pan')) {
+        if (!Object.hasOwn(radiradios[idx],'pan')) {
             console.debug(`Radio ${idx} has no pan property, defaulting to 0`);
             radios[idx].pan = 0;
+        }
+        // Default type
+        if (!Object.hasOwn(radios[idx], 'type')) {
+            console.warn(`Radio ${idx} has no type property, defaulting to none`);
+            radios[idx].type = "none";
         }
         // Default mute (not muted)
         radios[idx].mute = false;
         // Default name (used for logging until we get the proper name)
         radios[idx].name = `Radio ${idx}`;
+        if (radios[idx].type == "icecast" || radios[idx].type == "rtsp")
+        {
+            if (!Object.hasOwn(radios[idx],'streamUrl')) {
+                console.debug(`Radio ${idx} has no streamUrl property, defaulting to none`);
+                radios[idx].streamUrl = "";
+            }
+        }
     });
 
     // Populate radio cards
@@ -1169,6 +1181,7 @@ async function saveConfig() {
 }
 
 function newRadioClear() {
+    $('#new-radio-name').val('');
     $('#new-radio-address').val('');
     $('#new-radio-port').val('');
     $('#new-radio-pan').val(0);
@@ -1176,17 +1189,21 @@ function newRadioClear() {
 
 function newRadioAdd() {
     // Get values
+    const newRadioName = $('#new-radio-name').val();
     const newRadioAddress = $('#new-radio-address').val();
     const newRadioPort = $('#new-radio-port').val();
     const newRadioColor = $('#new-radio-color').val();
     const newRadioPan = $('#new-radio-pan').val();
+    const newRadioType = $('#new-radio-type').val();
 
     // Create the new radio entry
     var newRadio = {
+        name: newRadioName,
         address: newRadioAddress,
         port: newRadioPort,
         color: newRadioColor,
         pan: newRadioPan,
+        type: newRadioType
     };
 
     // Validate

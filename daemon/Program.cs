@@ -268,7 +268,7 @@ namespace netcore_cli
                 SB9600.HeadType head = (SB9600.HeadType)Enum.Parse(typeof(SB9600.HeadType), (string)sb9600config["head"]);
                 string port = (string)sb9600config["port"];
                 Log.Debug("      Control: {HeadType}-head SB9600 radio on port {SerialPort}", head, port);
-                
+
                 // Parse softkeys and button bindings
                 List<Softkey> softkeys = new List<Softkey>();
                 var cfgSoftkeys = (TomlTable)config["softkeys"];
@@ -335,6 +335,30 @@ namespace netcore_cli
                 DaemonWebsocket.radio = radio;
             }
             ///
+            /// Icecast Control
+            ///
+            else if (controlType == "icecast")
+            {
+                var icecastConfig = (TomlTable)config["icecast"];
+                string streamUrl = (string)icecastConfig["url"];
+                Log.Debug("      Control: Icecast radio, URL: {StreamUrl}", streamUrl);
+                radio = new Radio(Config.DaemonName, Config.DaemonDesc, RadioType.Icecast, streamUrl);
+                // Update websocket radio object
+                DaemonWebsocket.radio = radio;
+            }
+            ///
+            /// RTSP Control
+            ///
+            else if (controlType == "rtsp")
+            {
+                var rtspConfig = (TomlTable)config["rtsp"];
+                string streamUrl = (string)rtspConfig["url"];
+                Log.Debug("      Control: RTSP radio, URL: {StreamUrl}", streamUrl);
+                radio = new Radio(Config.DaemonName, Config.DaemonDesc, RadioType.RTSP, streamUrl);
+                // Update websocket radio object
+                DaemonWebsocket.radio = radio;
+            }
+            ///
             /// CM108 single-channel PTT controlled radio
             ///
             else if (controlType == "cm108")
@@ -346,6 +370,12 @@ namespace netcore_cli
                 Log.Error("Unknown radio control type specified: {InvalidControlType}", controlType);
                 return 1;
             }
+            
+            ///
+            /// Control Type fallback
+            ///
+            Log.Error("Unknown radio control type specified: {InvalidControlType}", controlType);
+            return 1;
 
             // Audio Recording Config (optional)
             if (config.ContainsKey("recording"))

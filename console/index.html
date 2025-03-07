@@ -74,6 +74,35 @@
             <!-- Volume Slider -->
             <div id="navbar-volume" class="navbar-item">
                 <ion-icon name="volume-medium-sharp"></ion-icon>
+                        <label for="new-radio-name">Name</label>
+                        <input type="text" name="new-radio-name" id="new-radio-name">
+                        <br><br>
+                        <label for="new-radio-address">Address</label>
+                        <input type="text" name="new-radio-address" id="new-radio-address">
+                        <br><br>
+                        <label for="new-radio-port">Port</label>
+                        <input type="number" name="new-radio-port" id="new-radio-port">
+                        <br><br>
+                        <label for="new-radio-color">Color</label>
+                        <select name="new-radio-color" id="new-radio-color">
+                            <option value="red">Red</option>
+                            <option value="amber">Amber</option>
+                            <option value="green">Green</option>
+                            <option value="blue">Blue</option>
+                            <option value="purple">Purple</option>
+                        </select>
+                        <br><br>
+                        <label for="new-radio-type">Radio Type</label>
+                        <select name="new-radio-type" id="new-radio-type">
+                            <option value="none">None</option>
+                            <option value="sb9600">SB9600</option>
+                            <option value="icecast">Icecast</option>
+                            <option value="rtsp">RTSP</option>
+                        </select>
+                        <br><br>
+                        <label for="new-radio-pan">Panner</label>
+                        <input type="range" name="new-radio-pan" id="new-radio-pan" value="0" min="-100" max="100">
+                        <br><br>
                 <input type="range" class="topcoat-range" id="console-volume" value="75" oninput="volumeSlider()" disabled>
             </div>
 

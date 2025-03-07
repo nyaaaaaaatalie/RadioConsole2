@@ -324,6 +324,53 @@ namespace daemon
             Log.Debug("Stopped recording");
         }
 
+        /// <summary>
+        /// Handle receiving an icecast stream
+        /// </summary>
+        /// <param name="url">the icecast stream URL</param>
+        public static void HandleIcecastStream(string streamUrl, string streamType = "icecast")
+        {
+            Log.Debug("Handling Icecast stream");
+            try
+            {
+                using (var waveOut = new WaveOutEvent())
+                {
+                    // Create a stream reader for the Icecast URL
+                    WaveStream reader = null;
+                    if (streamType == "icecast")
+                        reader = new MediaFoundationReader(streamUrl);
+                    else if (streamType == "rtsp")
+                    {
+                        // Create a stream reader for the RTSP URL
+                        var rtspStream = new Vlc.DotNet.RTSP.RTSPStream(streamUrl);
+                        reader = rtspStream.GetMediaStream();
+                    }
+                    else
+                        return;
+
+                    // Set the output device
+                    var waveOutDevice = new WaveOutDevice(Daemon.Config.RxAudioDevice);
+                    // Start the waveOutDevice with the stream reader
+                    waveOutDevice.Start(reader);
+                    Log.Debug("Icecast stream started");
+                    // Wait for stream to end
+                    while (!reader.EndOfStream)
+                    {
+                        // Read the next sample and send it to the device
+                        var samples = reader.ReadSamples();
+                        waveOutDevice.WriteSamples(samples);
+                    }
+
+                    Log.Debug("Icecast stream ended");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error handling Icecast stream: {0}", ex.Message);
+            }
+
+        }
+
         public static void SetRecGains(double rxGainDb, double txGainDb)
         {
             recRxGain = (float)Math.Pow(10, rxGainDb/20);
