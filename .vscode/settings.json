@@ -10,5 +10,6 @@
         "excludeDirectories": [
             "**/win-unpacked"
         ]
-    }
+    },
+    "cmake.ignoreCMakeListsMissing": true
 }

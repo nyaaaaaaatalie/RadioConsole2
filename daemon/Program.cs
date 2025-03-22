@@ -37,6 +37,7 @@ using DirectShowLib;
 using MathNet.Numerics;
 using rc2_core;
 using moto_sb9600;
+using moto_xcmp;
 
 namespace netcore_cli
 {
@@ -197,6 +198,33 @@ namespace netcore_cli
                     );
                 }
                 break;
+
+                case RadioControlMode.XCMP:
+                {
+                    radio = new MotoXcmpRadio(
+                        Config.Daemon.Name,
+                        Config.Daemon.Desc,
+                        Config.Control.RxOnly,
+                        Config.Daemon.ListenAddress,
+                        Config.Daemon.ListenPort,
+                        Config.Control.Xcmp.Ip,
+                        Config.Control.Xcmp.Port,
+                        Config.Control.Xcmp.AuthKey0,
+                        Config.Control.Xcmp.AuthKey1,
+                        Config.Control.Xcmp.AuthKey2,
+                        Config.Control.Xcmp.AuthKey3,
+                        Config.Control.Xcmp.AuthDelta,
+                        Config.Control.Xcmp.AuthLevel,
+                        Config.Control.Xcmp.Flavor,
+                        localAudio.TxAudioCallback,
+                        8000,
+                        Config.Softkeys,
+                        Config.TextLookups.Zone,
+                        Config.TextLookups.Channel
+                    );
+                }
+                break;
+
                 default:
                 {
                     Log.Error("Control mode {mode} not yet implemented!", Config.Control.ControlMode.ToString());

@@ -14,6 +14,8 @@ RC2 consists of two parts - the GUI console (`rc2-console`) and the radio contro
    - Try to query your PC's audio devices by running `./daemon list-audio` from a command prompt/terminal in the directory you downloaded the daemon to. If everything is installed correctly, you should see a list of audio input & output devices printed to the terminal.
 ### Console GUI Installation
 The `rc2-console` GUI is a portable electron application. Simply extract the exe from the [latest release on the releases page](https://github.com/W3AXL/RadioConsole2/releases) to a location of your choosing and run.
+## Wiring
+See [`WIRING.md`](https://github.com/W3AXL/RadioConsole2/blob/main/WIRING.md) for connection guides and example interface cables.
 ## Configuration
 ### Configuring the radio control `daemon`
 Use the [`config.example.toml`](https://github.com/W3AXL/RadioConsole2/blob/main/daemon/config.example.toml) file as a template for your daemon configuration. See the descriptions for each section below:
